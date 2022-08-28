@@ -1,24 +1,46 @@
-import logo from './logo.svg';
+import { StoreContext, actions } from './store'
 import './App.css';
+import { useContext, useRef } from 'react';
+
+
 
 function App() {
+  const [state, dispatch] = useContext(StoreContext);
+  const inputRef = useRef()
+  const handleAdd = () => {
+    dispatch(actions.setTodoInput('')) 
+    dispatch(actions.addTodoInput(state.todoInput))
+    inputRef.current.focus();
+  }
+  const handleDelete = (index) => dispatch(actions.deleteTodo(index))
+  
+ 
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='wrap'>
+      <input 
+        ref={inputRef}
+        value={state.todoInput}
+        onChange={e => dispatch(actions.setTodoInput(e.target.value))}
+      />
+
+      <button 
+        onClick={handleAdd}
+      >add</button>
+
+      <ul>
+        {state.todos.map((todo, index) => {
+          return(
+            <ul key={index} className='ul'>
+              <li >{todo}</li>
+              <button onClick={() => handleDelete(index)}>X</button>
+            </ul>
+          )
+        })}
+      </ul>
     </div>
+
   );
 }
 
